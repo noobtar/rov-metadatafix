@@ -1,4 +1,4 @@
-# rov-metadatafix
+# rov-metadatafix-tar122
 
 ```text
           ________________________________
@@ -94,20 +94,33 @@ aarch64
 
 ### 2. ติดตั้ง Python และเครื่องมือที่จำเป็น
 
+วิธีที่สะดวกที่สุดคือวางไฟล์ `install-termux.sh` ไว้ในโฟลเดอร์เดียวกับโปรแกรม แล้วรันคำสั่งเดียว:
+
 ```bash
-pkg update
-pkg upgrade
-pkg install python clang
-python -m pip install unicorn
+bash install-termux.sh
+```
+
+สคริปต์จะอัปเดต Termux ติดตั้งเครื่องมือ build, compile Unicorn 2.1.4 จาก source, สร้าง symlink และตรวจสอบการ import ให้อัตโนมัติ
+
+ถ้าต้องการติดตั้งด้วยตัวเอง ให้รันคำสั่งต่อไปนี้:
+
+```bash
+pkg update && pkg upgrade -y
+pkg install python -y
+pkg install cmake clang make -y
+python -m pip install --upgrade pip setuptools wheel
+pip install --no-cache-dir --no-binary unicorn unicorn==2.1.4
+cd $PREFIX/lib/python3.14/site-packages/unicorn/lib
+ln -sf libunicorn.so.2 libunicorn.so
 ```
 
 ตรวจสอบว่า Unicorn โหลดได้:
 
 ```bash
-python -c "import unicorn; print(unicorn.__version__)"
+python -c "import unicorn; print('Unicorn:', unicorn.__version__)"
 ```
 
-ถ้า `pip install unicorn` ไม่มี wheel สำหรับ Android เครื่องอาจต้อง compile package เอง และอาจใช้เวลานานหรือไม่รองรับกับ Termux รุ่นนั้น
+ขั้นตอนนี้บังคับให้ compile Unicorn 2.1.4 จาก source เพื่อให้ใช้งานบน Termux ได้ โดย path `python3.14` ต้องตรงกับเวอร์ชัน Python ที่ติดตั้งอยู่ใน Termux
 
 ### 3. เปิดสิทธิ์เข้าถึงไฟล์
 
