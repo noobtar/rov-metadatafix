@@ -92,7 +92,21 @@ aarch64
 
 ถ้าเป็น `armv7l` หรือสถาปัตยกรรม 32-bit อาจใช้กับไฟล์ ARM64 และ address ของโปรแกรมนี้ไม่ได้
 
-### 2. ติดตั้ง Python และเครื่องมือที่จำเป็น
+### 2. เปิดสิทธิ์เข้าถึงไฟล์
+
+รันครั้งเดียว:
+
+```bash
+termux-setup-storage
+```
+
+กดยอมรับ permission จาก Android แล้วไฟล์ใน shared storage จะอยู่ใต้:
+
+```text
+~/storage/shared/
+```
+
+### 3. ติดตั้ง Python และเครื่องมือที่จำเป็น
 
 วิธีที่สะดวกที่สุดคือวางไฟล์ `install-termux.sh` ไว้ในโฟลเดอร์เดียวกับโปรแกรม แล้วรันคำสั่งเดียว:
 
@@ -110,8 +124,10 @@ pkg install python -y
 pkg install cmake clang make -y
 python -m pip install --upgrade pip setuptools wheel
 pip install --no-cache-dir --no-binary unicorn unicorn==2.1.4
-cd $PREFIX/lib/python3.14/site-packages/unicorn/lib
-ln -sf libunicorn.so.2 libunicorn.so
+site_packages="$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')"
+unicorn_library="$(find "$site_packages/unicorn" -type f -name 'libunicorn.so*' -print -quit)"
+unicorn_lib_dir="$(dirname "$unicorn_library")"
+ln -sfn "$(basename "$unicorn_library")" "$unicorn_lib_dir/libunicorn.so"
 ```
 
 ตรวจสอบว่า Unicorn โหลดได้:
@@ -120,21 +136,9 @@ ln -sf libunicorn.so.2 libunicorn.so
 python -c "import unicorn; print('Unicorn:', unicorn.__version__)"
 ```
 
-ขั้นตอนนี้บังคับให้ compile Unicorn 2.1.4 จาก source เพื่อให้ใช้งานบน Termux ได้ โดย path `python3.14` ต้องตรงกับเวอร์ชัน Python ที่ติดตั้งอยู่ใน Termux
+ขั้นตอนนี้บังคับให้ compile Unicorn 2.1.4 จาก source และค้นหา path ของ Python ที่ติดตั้งอยู่โดยอัตโนมัติ
 
-### 3. เปิดสิทธิ์เข้าถึงไฟล์
 
-รันครั้งเดียว:
-
-```bash
-termux-setup-storage
-```
-
-กดยอมรับ permission จาก Android แล้วไฟล์ใน shared storage จะอยู่ใต้:
-
-```text
-~/storage/shared/
-```
 
 ### 4. เตรียมไฟล์
 
@@ -144,12 +148,6 @@ termux-setup-storage
 rov-metadatafix.py
 libil2cpp.so
 global-metadata.dat
-```
-
-ตัวอย่างการเข้าโฟลเดอร์:
-
-```bash
-cd ~/storage/shared/rov-metadatafix
 ```
 
 ### 5. รันโปรแกรม
@@ -583,7 +581,7 @@ AF 1B B1 FA
 
 ---
 
-## สรุปแบบเด็กอนุบาล
+## สรุป
 
 ```text
 1. หาเครื่องมือเปิดกล่อง
