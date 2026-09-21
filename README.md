@@ -1,9 +1,9 @@
-# rov-metadatafix-tar122
+# rov-metadatafix
 
 ```text
-          ________________________________
-         /                                /|
-        /        ROV METADATAFIX         / |
+             ________________________________
+           /                                /|
+          /        ROV METADATAFIX         / |
          /________________________________/  |
          |                                |  |
          |          BY TAR122             |  /
@@ -141,7 +141,7 @@ termux-setup-storage
 วางไฟล์เหล่านี้ไว้ในโฟลเดอร์เดียวกัน:
 
 ```text
-rov-metadatafix-tar122.py
+rov-metadatafix.py
 libil2cpp.so
 global-metadata.dat
 ```
@@ -157,7 +157,7 @@ cd ~/storage/shared/rov-metadatafix
 ใช้ `python` แทนคำสั่ง `py` ของ Windows:
 
 ```bash
-python rov-metadatafix-tar122.py libil2cpp.so global-metadata.dat
+python rov-metadatafix.py libil2cpp.so global-metadata.dat
 ```
 
 ผลลัพธ์จะถูกสร้างในโฟลเดอร์:
@@ -184,13 +184,13 @@ Termux ไม่ใช่ Windows จึงไม่ใช้ `.exe`, `py` ห�
 เปิด Command Prompt ในโฟลเดอร์เดียวกับสคริปต์ แล้วรัน:
 
 ```bat
-py rov-metadatafix-tar122.py libil2cpp.so global-metadata.dat
+py rov-metadatafix.py libil2cpp.so global-metadata.dat
 ```
 
 รูปแบบคำสั่งคือ:
 
 ```text
-py rov-metadatafix-tar122.py <libil2cpp.so> <global-metadata.dat>
+py rov-metadatafix.py <libil2cpp.so> <global-metadata.dat>
 ```
 
 ผลลัพธ์จะถูกเขียนลงโฟลเดอร์ `./output` ตายตัวเสมอ
@@ -198,7 +198,7 @@ py rov-metadatafix-tar122.py <libil2cpp.so> <global-metadata.dat>
 ตัวอย่าง:
 
 ```bat
-py rov-metadatafix-tar122.py game/libil2cpp.so game/global-metadata.dat
+py rov-metadatafix.py game/libil2cpp.so game/global-metadata.dat
 ```
 
 ---
