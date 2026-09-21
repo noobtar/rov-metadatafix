@@ -20,12 +20,19 @@ echo "[4/5] Building Unicorn 2.1.4 from source..."
 python -m pip install --no-cache-dir --no-binary unicorn unicorn==2.1.4
 
 echo "[5/5] Creating the Unicorn shared-library link..."
-unicorn_lib_dir="$(python -c 'import pathlib, unicorn; print(pathlib.Path(unicorn.__file__).parent / "lib")')"
-if [ ! -f "$unicorn_lib_dir/libunicorn.so.2" ]; then
-    echo "[!] Could not find $unicorn_lib_dir/libunicorn.so.2"
+site_packages="$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')"
+unicorn_package_dir="$site_packages/unicorn"
+unicorn_library="$(find "$unicorn_package_dir" -type f -name 'libunicorn.so*' -print -quit 2>/dev/null || true)"
+
+if [ -z "$unicorn_library" ]; then
+    echo "[!] Could not find libunicorn.so inside $unicorn_package_dir"
     exit 1
 fi
-ln -sf libunicorn.so.2 "$unicorn_lib_dir/libunicorn.so"
+
+unicorn_lib_dir="$(dirname "$unicorn_library")"
+unicorn_library_name="$(basename "$unicorn_library")"
+ln -sfn "$unicorn_library_name" "$unicorn_lib_dir/libunicorn.so"
+echo "    Linked $unicorn_lib_dir/libunicorn.so -> $unicorn_library_name"
 
 python -c 'import unicorn; print("Unicorn:", unicorn.__version__)'
 echo "[OK] Termux installation completed."
